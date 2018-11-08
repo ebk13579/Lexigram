@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lexigram Media Search</title>
+</head>
+
+<body>
+    <form id="media">
+        <label for="media-input">Search for Lexigram media</label>
+        <input type="text" id="media-input">
+        <br>
+        <input id="find-media" type="submit" value="Media Search">
+    </form>
+    <div id="search-list"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#find-media").on("click", function (event) {
+            var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdSI6Imx4ZzphcGkiLCJzYyI6WyJrZzpyZWFkIiwiZXh0cmFjdGlvbjpyZWFkIl0sImFpIjoiYXBpOmM0NjhkMjM4LTYzNzUtZTlhMC03NDc5LTUzYjliYTk2N2Y0OSIsInVpIjoidXNlcjozMDhkNzViNy1kMWU0LTg5ZDgtYjM1OS0wNmNiZDc0ZjYzYWEiLCJpYXQiOjE1NDE2MzE3ODF9.MHrnU474EVEiZ_WqVY-eIhxEZV_bw34fI2Di7G2Xhyg";
+            event.preventDefault();
+
+            var media = $("#media-input").val();
+
+            var queryURL = "https://api.lexigram.io/v1/lexigraph/search?q=" + media;
+
+            $.ajax({
+
+                url: queryURL,
+                xhrFields: {
+                    // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+                    // This can be used to set the 'withCredentials' property.
+                    // Set the value to 'true' if you'd like to pass cookies to the server.
+                    // If this is enabled, your server must respond with the header
+                    // 'Access-Control-Allow-Credentials: true'.
+                    withCredentials: false
+                },
+
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                method: "GET",
+
+            }).then(function (response) {
+                $("#search-list").empty();
+                console.log(response);
+                console.log("url [1]: " + response.results[1].contentUrl);
+
+                for (let i = 0; i < response.results.length; i++) {
+                    console.log(response.results[i].name);
+                    console.log(response.results[i].contentUrl);
+                    $("#search-list").append(" | <a href=" + response.results[i].contentUrl + " target='_blank'>" + response.results[i].name + "</a> | <br>")
+                }
+
+            })
+        });
+    </script>
+</body>
+
+</html>
